@@ -81,12 +81,6 @@ public class ScheduleProjectPlan {
 			return null;
 		}
 
-		System.out.println("Project created!");
-		System.out.println("Project: ");
-		System.out.println("Project Name: " + project.getProjectName());
-		System.out.println("Project Start date: " + DateUtils.formatDate(project.getStartDate()));
-		System.out.println("Project End date: " + DateUtils.formatDate(project.getEndDate()));
-		
 		return project;
 	}
 	
@@ -99,8 +93,8 @@ public class ScheduleProjectPlan {
 			
 			System.out.println("------Project created!------");
 			System.out.println("Name: " + project.getProjectName());
-			System.out.println("Start date: " + project.getStartDate());
-			System.out.println("End date: " + project.getEndDate());
+			System.out.println("Start date: " + DateUtils.formatDate(project.getStartDate()));
+			System.out.println("End date: " + DateUtils.formatDate(project.getEndDate()));
 			
 			return true;
 		} else {
