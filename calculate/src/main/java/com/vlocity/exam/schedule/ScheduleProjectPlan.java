@@ -89,6 +89,7 @@ public class ScheduleProjectPlan {
 		if (project != null && project.getStartDate() != null && project.getEndDate() != null) {
 			if (project.getStartDate().after(project.getEndDate())) {
 				System.out.println("End date cannot be before start date");
+				return false;
 			}
 			
 			System.out.println("------Project created!------");
@@ -154,8 +155,8 @@ public class ScheduleProjectPlan {
 			if (CollectionUtils.isNotEmpty(tasks)) {
 				for (Tasks temp : tasks) {
 					System.out.println("Name: " + temp.getTaskName());
-					System.out.println("Start date: " + temp.getStartDate());
-					System.out.println("End date: " + temp.getEndDate());
+					System.out.println("Start date: " + DateUtils.formatDate(temp.getStartDate()));
+					System.out.println("End date: " + DateUtils.formatDate(temp.getEndDate()));
 					System.out.println("-------------------------------------------------");
 				}
 			}
