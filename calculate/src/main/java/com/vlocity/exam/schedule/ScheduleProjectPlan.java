@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -59,29 +60,74 @@ public class ScheduleProjectPlan {
 		}
 	}
 	
-	public Project createProject(String name, String startDate, String endDate) {
+	public Project createProject() {
 		
-		LOGGER.info("createProject starting...");
+		Scanner input = new Scanner(System.in);
+		System.out.print("Project Name: ");
+		String projName = input.next();
+		System.out.print("Project Start date (MM-dd-yyyy): ");
+		String projStartDate = input.next();
+		
+		System.out.print("Project End date (MM-dd-yyyy): ");
+		String projEndDate = input.next();
 		
 		Project project = new Project();
 		
-		project.setProjectName(name);
+		project.setProjectName(projName);
+
+		Date sd = formatDates(projStartDate);
+		Date ed = formatDates(projEndDate);
 		
+		project.setStartDate(sd);
+		project.setEndDate(ed);
+		
+		return project;
+	}
+	
+	public boolean validateProject(Project project) {
+		
+		if (project != null && project.getStartDate() != null && project.getEndDate() != null) {
+			if (project.getStartDate().after(project.getEndDate())) {
+				
+				System.out.println("End date cannot be before start date");
+				
+				Scanner input = new Scanner(System.in);
+				System.out.println("Please re-enter dates:");
+				
+				System.out.print("Project Start date (MM-dd-yyyy): ");
+				String projStartDate = input.next();
+				Date sd = formatDates(projStartDate);
+				project.setStartDate(sd);
+				
+				System.out.print("Project End date (MM-dd-yyyy): ");
+				String projEndDate = input.next();
+				Date ed = formatDates(projEndDate);
+				project.setStartDate(ed);
+			}
+			
+			System.out.println("Project created!");
+			System.out.println("Project: ");
+			System.out.println("Project Name: " + project.getProjectName());
+			System.out.println("Project Start date: " + project.getStartDate());
+			System.out.println("Project End date: " + project.getEndDate());
+			
+			return true;
+		} else {
+			System.out.println("Error creating project");
+			return false;
+		}
+	}
+	
+	private Date formatDates(String date) {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		Date d = null;
 		try {
-			
-			Date sd = sdf.parse(startDate);
-			Date ed = sdf.parse(endDate);
-			
-			project.setStartDate(sd);
-			project.setEndDate(ed);
-			
+			d = sdf.parse(date);  
 		} catch (ParseException e) {
 			System.out.println("Incorrect format!");
 		}
-
-		LOGGER.info("createProject completed..." + project.toString());
-		return project;
+		
+		return d;
 	}
 	
 	public Tasks createTask(String name, String status, Boolean isDependent, Date startDate) {
