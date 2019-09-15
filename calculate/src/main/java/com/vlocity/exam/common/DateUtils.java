@@ -20,6 +20,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         try {
         	resultDate = new SimpleDateFormat(Constants.DATE_FORMAT).parse(string);
         } catch (ParseException e) {
+        	System.out.println("-------------------------------------------------");
         	System.out.println("Incorrect date format!");
         	throw e;
         }
