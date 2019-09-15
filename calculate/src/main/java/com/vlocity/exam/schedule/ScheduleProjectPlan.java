@@ -10,8 +10,6 @@ import java.util.Scanner;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.vlocity.exam.model.Project;
 import com.vlocity.exam.model.Tasks;
@@ -19,11 +17,7 @@ import com.vlocity.exam.model.TasksEnum;
 
 public class ScheduleProjectPlan {
 
-	private static final Log LOGGER = LogFactory.getLog(ScheduleProjectPlan.class);
-	
 	public void createSchedule(Project project) {
-		LOGGER.info("createSchedule starting...");
-		
 		if (project != null) {
 			if (project.getProjectID() != null && StringUtils.isNotBlank(project.getProjectName())) {
 				if (CollectionUtils.isNotEmpty(project.getTasks())) {
@@ -92,7 +86,7 @@ public class ScheduleProjectPlan {
 				System.out.println("End date cannot be before start date");
 				
 				Scanner input = new Scanner(System.in);
-				System.out.println("Please re-enter dates:");
+				System.out.print("Please re-enter dates:");
 				
 				System.out.print("Project Start date (MM-dd-yyyy): ");
 				String projStartDate = input.next();
@@ -105,11 +99,10 @@ public class ScheduleProjectPlan {
 				project.setStartDate(ed);
 			}
 			
-			System.out.println("Project created!");
-			System.out.println("Project: ");
-			System.out.println("Project Name: " + project.getProjectName());
-			System.out.println("Project Start date: " + project.getStartDate());
-			System.out.println("Project End date: " + project.getEndDate());
+			System.out.println("------Project created!------");
+			System.out.println("Name: " + project.getProjectName());
+			System.out.println("Start date: " + project.getStartDate());
+			System.out.println("End date: " + project.getEndDate());
 			
 			return true;
 		} else {
@@ -130,29 +123,131 @@ public class ScheduleProjectPlan {
 		return d;
 	}
 	
-	public Tasks createTask(String name, String status, Boolean isDependent, Date startDate) {
-		
+	
+	public Tasks createTask(String name, Long duration, Date startDate, Date endDate) {
 		Tasks task = new Tasks();
-		task.setTaskId(1);
+		task.setTaskId(1); // TODO
 		task.setTaskName(name);
-		task.setStatus(status);
-		task.setIsDependent(isDependent);
-		
-		Long duration = Long.valueOf(TasksEnum.MOBILIZATION.getValue());
+		task.setStatus("Not Started");
 		task.setDuration(duration);
-		
 		task.setStartDate(startDate);
-
-		Calendar c = Calendar.getInstance();
-		c.setTime(startDate);
-		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-		
-		duration = (duration / 9) - 1;
-		
-		c.add(dayOfWeek, duration.intValue());
-		
-		task.setEndDate(c.getTime());
+		task.setEndDate(endDate);
 		
 		return task;
+	}
+	
+	public List<Tasks> createTasks(Project project, List<Tasks> tasks) {
+		
+		System.out.println("-------------------------------------------------");
+		System.out.println("Please create task:");
+		
+		Scanner input = new Scanner(System.in);
+		System.out.print("Task Name: ");
+		String taskName = input.next();
+		
+		System.out.print("Task duration in hours: ");
+		String taskDuration = input.next();
+		
+		Long duration = Long.parseLong(taskDuration);
+		Date dtEnd = computeDateDuration(project.getStartDate(), duration);
+		if (CollectionUtils.isEmpty(tasks)) {
+			duration = (duration / 9) - 1;
+			Tasks task = createTask(taskName, duration, project.getStartDate(), dtEnd);
+			tasks.add(task);
+			
+			System.out.print("Task added! Add more tasks? (Y/N): ");
+			String addMore = input.next();
+			if (StringUtils.equalsIgnoreCase(addMore, "Y")) {
+				tasks = createTasks(project, tasks);
+				
+				Long dtDuration = duration / 9;
+				Date dtStart = computeDateDuration(tasks.get(0).getEndDate(), dtDuration);
+				dtDuration = (dtDuration / 9) - 1;
+				dtEnd = computeDateDuration(dtStart, dtDuration);
+				
+				task = createTask(taskName, duration, dtStart, dtEnd);
+				tasks.add(task);
+			} else {
+				System.out.print("Task added!");
+			}
+			
+			if (CollectionUtils.isNotEmpty(tasks)) {
+				for (Tasks temp : tasks) {
+					System.out.println("Name: " + temp.getTaskName());
+					System.out.println("Start date: " + temp.getStartDate());
+					System.out.println("End date: " + temp.getEndDate());
+					System.out.println("-------------------------------------------------");
+				}
+			}
+		} else {
+			System.out.print("Is task dependent to any tasks? (Y/N): ");
+			String isDependent = input.next();
+			if (StringUtils.equals(isDependent, "Y")) {
+				Tasks task = withDependency(dtEnd);
+				tasks.add(task);
+			} else if (StringUtils.equals(isDependent, "N")) {
+				System.out.println("Tasks schedule created!");
+			} else {
+				System.out.println("Not a valid value");
+			}
+			System.out.println("-------------------------------------------------");
+		}
+		
+		return tasks;
+	}
+	
+	public Tasks withDependency(Date depEndDate) {
+		
+		Scanner input = new Scanner(System.in);
+		System.out.println("Please create dependency: ");
+		System.out.print("Task Name: ");
+		String taskName = input.next();
+		
+		System.out.print("Task duration in hours: ");
+		String taskDuration = input.next();
+		
+		System.out.print("Is task dependent to any tasks? (Y/N): ");
+		String isDependent = input.next();
+		
+		// TODO
+		
+		Long duration = Long.parseLong(taskDuration);
+		Long dtDuration = duration / 9;
+		Date dtStart = computeDateDuration(depEndDate, dtDuration);
+		dtDuration = (dtDuration / 9) - 1;
+		Date dtEnd = computeDateDuration(dtStart, dtDuration);
+		
+		Tasks task = createTask(taskName, duration, dtStart, dtEnd);
+		
+		return task;
+	}
+
+//	public Tasks addMore(Date dtEnd) {
+//		
+//		Scanner input = new Scanner(System.in);
+//		System.out.print("Task Name: ");
+//		String taskName = input.next();
+//		
+//		System.out.print("Task duration in hours: ");
+//		String taskDuration = input.next();
+//
+//		Long duration = Long.parseLong(taskDuration);
+//		Long dtDuration = duration / 9;
+//		Date dtStart = computeDateDuration(dtEnd, dtDuration);
+//		dtDuration = (dtDuration / 9) - 1;
+//		dtEnd = computeDateDuration(dtStart, dtDuration);
+//		
+//		Tasks task = createTask(taskName, duration, dtStart, dtEnd);
+//		
+//		return task;
+//	}
+	
+	private Date computeDateDuration(Date date, Long duration) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(date);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+		c.add(dayOfWeek, duration.intValue());
+		
+		return c.getTime();
 	}
 }

@@ -1,6 +1,10 @@
 package com.vlocity.exam.launch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vlocity.exam.model.Project;
+import com.vlocity.exam.model.Tasks;
 import com.vlocity.exam.schedule.ScheduleProjectPlan;
 
 public class LaunchCreateApplication {
@@ -9,13 +13,15 @@ public class LaunchCreateApplication {
 		
 		System.out.println("Welcome to Project Scheduler!");
 		System.out.println("Please input the following to create a project: ");
+		System.out.println("-------------------------------------------------");
 		
 		ScheduleProjectPlan schedProjPlan = new ScheduleProjectPlan();
 		Project project = schedProjPlan.createProject();
 		boolean validProject = schedProjPlan.validateProject(project);
 		
 		if (validProject) {
-			// create task
+			List<Tasks> tasks = new ArrayList<Tasks>();
+			tasks = schedProjPlan.createTasks(project, tasks);
 		}
 	}
 }
