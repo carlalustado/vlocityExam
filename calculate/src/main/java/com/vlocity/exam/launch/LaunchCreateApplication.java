@@ -12,10 +12,9 @@ public class LaunchCreateApplication {
 		
 		ScheduleProjectPlan schedProjPlan = new ScheduleProjectPlan();
 		Project project = schedProjPlan.createProject();
-		boolean validProject = schedProjPlan.validateProject(project);
-		
-		if (validProject) {
-			// create task
+		if (project != null) {
+			boolean validProject = schedProjPlan.validateProject(project);
 		}
+		
 	}
 }
