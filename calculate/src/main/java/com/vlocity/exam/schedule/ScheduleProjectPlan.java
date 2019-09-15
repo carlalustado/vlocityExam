@@ -1,5 +1,7 @@
 package com.vlocity.exam.schedule;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -54,19 +56,31 @@ public class ScheduleProjectPlan {
 					tasks.add(task);
 				}
 			}
-		} else {
-			// create new project
 		}
 	}
 	
-	public Project createProject(String name, Date startDate, Date endDate) {
+	public Project createProject(String name, String startDate, String endDate) {
+		
+		LOGGER.info("createProject starting...");
 		
 		Project project = new Project();
 		
 		project.setProjectName(name);
-		project.setStartDate(startDate);
-		project.setEndDate(endDate);
 		
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		try {
+			
+			Date sd = sdf.parse(startDate);
+			Date ed = sdf.parse(endDate);
+			
+			project.setStartDate(sd);
+			project.setEndDate(ed);
+			
+		} catch (ParseException e) {
+			System.out.println("Incorrect format!");
+		}
+
+		LOGGER.info("createProject completed..." + project.toString());
 		return project;
 	}
 	
