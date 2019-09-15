@@ -70,7 +70,20 @@ public class Tasks {
 	
 	@Override
 	public String toString() {
-		return "Tasks [taskName=" + taskName + ", taskId=" + taskId + ", duration=" + duration + ", startDate="
-				+ startDate + ", endDate=" + endDate + ", status=" + status + ", isDependent=" + isDependent + "]";
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n\t taskName= ").append(
+			(getTaskName() == null) ? "null" : getTaskName());
+		sb.append("\n\t taskId= ").append(
+				(getTaskId() == null) ? "null" : getTaskId());
+		sb.append("\n\t duration= ").append(
+				(getDuration() == null) ? "null" : getDuration());
+		sb.append("\n\t startDate= ").append(
+			(getStartDate() == null) ? "null" : getStartDate());
+		sb.append("\n\t endDate= ").append(
+			(getEndDate() == null) ? "null" : getEndDate());
+		sb.append("\n\t status= ").append(
+			(getStatus() == null) ? "null" : getStatus());
+		sb.append("\n\t isDependent= ").append(isDependent);
+		return sb.toString();
 	}
 }

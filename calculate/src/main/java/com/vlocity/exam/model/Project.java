@@ -71,8 +71,21 @@ public class Project {
 	
 	@Override
 	public String toString() {
-		return "Project [projectName=" + projectName + ", projectID=" + projectID + ", startDate=" + startDate
-				+ ", endDate=" + endDate + ", description=" + description + ", status=" + status + ", tasks=" + tasks
-				+ "]";
+		StringBuffer sb = new StringBuffer();
+		sb.append("\n\t projectName= ").append(
+			(getProjectName() == null) ? "null" : getProjectName());
+		sb.append("\n\t projectID= ").append(
+				(getProjectID() == null) ? "null" : getProjectID());
+		sb.append("\n\t startDate= ").append(
+			(getStartDate() == null) ? "null" : getStartDate());
+		sb.append("\n\t endDate= ").append(
+			(getEndDate() == null) ? "null" : getEndDate());
+		sb.append("\n\t description= ").append(
+			(getDescription() == null) ? "null" : getDescription());
+		sb.append("\n\t status= ").append(
+				(getStatus() == null) ? "null" : getStatus());
+		sb.append("\n\t tasks= ").append(
+				(getTasks() == null) ? "null" : getTasks());
+		return sb.toString();
 	}
 }
